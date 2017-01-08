@@ -10,7 +10,7 @@ main() {
   keystore_file_extenstion "Enter keystore file extension (Default: keystore) and press [Enter]: " KEYSTORE_FILE_EXTENSION
   check_file_exists "${CERTIFICATE_DIRECTORY}/jks/*.${KEYSTORE_FILE_EXTENSION}"
   #host_entry "Enter domain name to trust in subject alternative name and press [ENTER]: " DOMAIN
-  password_entry "Enter password for keystore and press [Enter]: " KEYSTORE_PASSWORD
+  password_entry "Enter password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
   distinguished_name_entry DISTINGUISHED_NAME
   pem_for_ssh_check
 
