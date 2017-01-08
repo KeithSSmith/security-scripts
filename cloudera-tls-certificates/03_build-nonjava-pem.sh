@@ -8,7 +8,7 @@ source tls-functions.sh
 
 main() {
   directory_entry "Enter the base directory (Default: /opt/cloudera/security) to store your certificates and press [ENTER]: " CERTIFICATE_DIRECTORY "/opt/cloudera/security"
-  password_entry "Enter exiting password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
+  password_entry "Enter existing password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
   pem_for_ssh_check
 
   for HOST in $(cat /tmp/hosts)

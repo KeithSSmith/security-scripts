@@ -50,7 +50,7 @@ main() {
 
   fi
 
-  password_entry "Enter exiting password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
+  password_entry "Enter existing password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
 
   for HOST in $(cat /tmp/hosts)
   do
