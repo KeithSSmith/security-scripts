@@ -205,14 +205,12 @@ keystore_file_extenstion() {
     if ${USE_KEYSTORE_DEFAULT}
     then
       eval "${2}=keystore"
-      check_file_exists "${CERTIFICATE_DIRECTORY}/jks/*.keystore"
     else
       keystore_file_extenstion "${PROMPT}" "${2}"
     fi
 
   else
     eval "${2}=\"${ENTRY}\""
-    check_file_exists "${CERTIFICATE_DIRECTORY}/jks/*.${ENTRY}"
   fi
 }
 

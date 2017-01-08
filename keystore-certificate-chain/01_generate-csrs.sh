@@ -8,6 +8,7 @@ main() {
   directory_entry "Enter the base directory (Default: /opt/cloudera/security) to store your certificates and press [ENTER]: " CERTIFICATE_DIRECTORY "/opt/cloudera/security"
   create_certificate_directory "${CERTIFICATE_DIRECTORY}"
   keystore_file_extenstion "Enter keystore file extension (Default: keystore) and press [Enter]: " KEYSTORE_FILE_EXTENSION
+  check_file_exists "${CERTIFICATE_DIRECTORY}/jks/*.${KEYSTORE_FILE_EXTENSION}"
   #host_entry "Enter domain name to trust in subject alternative name and press [ENTER]: " DOMAIN
   password_entry "Enter password for keystore and press [Enter]: " KEYSTORE_PASSWORD
   distinguished_name_entry DISTINGUISHED_NAME
