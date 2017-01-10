@@ -51,21 +51,50 @@ main() {
   fi
 
   password_entry "Enter existing password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
+  HOSTNAME="hostname; "
 
   for HOST in $(cat /tmp/hosts)
   do
-    ssh ${PEM_FILE} ${HOST} "hostname; printf 'Importing Root Certificate to keystore ...\n'; keytool -importcert -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias rootca -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD} -trustcacerts -file ${CERTIFICATE_DIRECTORY}/CAcerts/${ROOT_CERTIFICATE}"
+    TASK_IMPORT_ROOT_CERT="printf 'Importing Root Certificate to keystore ...\n'; "
+    IMPORT_ROOT_CERT="keytool -importcert -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias rootca -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD} -trustcacerts -file ${CERTIFICATE_DIRECTORY}/CAcerts/${ROOT_CERTIFICATE}"
+    TASK_IMPORT_ROOT_CERT_CACHAIN="printf 'Importing Root Certificate into Base 64 Certificate Chain ...\n'; "
+    IMPORT_ROOT_CERT_CACHAIN="cat ${CERTIFICATE_DIRECTORY}/CAcerts/${ROOT_CERTIFICATE} > ${CERTIFICATE_DIRECTORY}/CAcerts/cachain.pem"
+
+    SSH_COMMAND="${HOSTNAME}${TASK_IMPORT_ROOT_CERT}${IMPORT_ROOT_CERT}${TASK_IMPORT_ROOT_CERT_CACHAIN}${IMPORT_ROOT_CERT_CACHAIN}"
+
+    ssh ${PEM_FILE} ${HOST} "${SSH_COMMAND}"
+
     for INTERMEDIATE_CERT in $( echo "${INTERMEDIATE_CERTS[@]}" )
     do
-      ssh ${PEM_FILE} ${HOST} "hostname; printf 'Importing Intermedate Certificate ${INTERMEDIATE_CERT} to keystore ...\n'; keytool -importcert -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias ${INTERMEDIATE_CERT} -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD} -trustcacerts -file ${CERTIFICATE_DIRECTORY}/CAcerts/${INTERMEDIATE_CERT}"
+      TASK_IMPORT_INT_CERT="printf 'Importing Intermediate Certificate ${INTERMEDIATE_CERT} to keystore ...\n'; "
+      IMPORT_INT_CERT="keytool -importcert -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias ${INTERMEDIATE_CERT} -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD} -trustcacerts -file ${CERTIFICATE_DIRECTORY}/CAcerts/${INTERMEDIATE_CERT}"
+      TASK_IMPORT_INT_CERT_CACHAIN="printf 'Importing Intermediate Certificate into Base 64 Certificate Chain ...\n'; "
+      IMPORT_INT_CERT_CACHAIN="cat ${CERTIFICATE_DIRECTORY}/CAcerts/${INTERMEDIATE_CERT} >> ${CERTIFICATE_DIRECTORY}/CAcerts/cachain.pem"
+
+      SSH_COMMAND="${HOSTNAME}${TASK_IMPORT_INT_CERT}${IMPORT_INT_CERT}${TASK_IMPORT_INT_CERT_CACHAIN}${IMPORT_INT_CERT_CACHAIN}"
+
+      ssh ${PEM_FILE} ${HOST} "${SSH_COMMAND}"
     done
-    ssh ${PEM_FILE} ${HOST} "hostname; printf 'Importing Signed Certificate ${HOST} to keystore ...\n'; keytool -importcert -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias ${HOST} -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD} -trustcacerts -file ${CERTIFICATE_DIRECTORY}/x509/${HOST}.${SIGNED_CERTIFICATE_EXTENSION}"
+
+    TASK_IMPORT_HOST_CERT="printf 'Importing Signed Certificate ${HOST} to keystore ...\n'; "
+    IMPORT_HOST_CERT="keytool -importcert -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias ${HOST} -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD} -trustcacerts -file ${CERTIFICATE_DIRECTORY}/x509/${HOST}.${SIGNED_CERTIFICATE_EXTENSION}"
+
+    SSH_COMMAND="${HOSTNAME}${TASK_IMPORT_HOST_CERT}${IMPORT_HOST_CERT}"
+
+    ssh ${PEM_FILE} ${HOST} "${SSH_COMMAND}"
   done
 
 
   for HOST in $(cat /tmp/hosts)
   do
-    ssh ${PEM_FILE} ${HOST} "hostname; printf 'Removing keystore symbolic link (if exists) ...\n'; rm -f ${CERTIFICATE_DIRECTORY}/jks/keystore.jks; printf 'Creating keystore symbolic link ...\n'; ln -s ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} ${CERTIFICATE_DIRECTORY}/jks/keystore.jks"
+    TASK_REMOVE_KEYSTORE_SYM_LINK="printf 'Removing keystore symbolic link (if exists) ...\n'; "
+    REMOVE_KEYSTORE_SYM_LINK="rm -f ${CERTIFICATE_DIRECTORY}/jks/keystore.jks; "
+    TASK_CREATE_KEYSTORE_SYM_LINK="printf 'Creating keystore symbolic link ...\n'; "
+    CREATE_KEYSTORE_SYM_LINK="ln -s ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} ${CERTIFICATE_DIRECTORY}/jks/keystore.jks"
+
+    SSH_COMMAND="${HOSTNAME}${TASK_REMOVE_KEYSTORE_SYM_LINK}${REMOVE_KEYSTORE_SYM_LINK}${TASK_CREATE_KEYSTORE_SYM_LINK}${CREATE_KEYSTORE_SYM_LINK}"
+
+    ssh ${PEM_FILE} ${HOST} "${SSH_COMMAND}"
   done
 }
 

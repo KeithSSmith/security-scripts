@@ -1,6 +1,6 @@
 #!/bin/bash
-#keytool -import -alias rootca -storepass ${TRUSTSTORE_PASSWORD} -noprompt -keystore ${CERTIFICATE_DIRECTORY}/jks/truststore.jks -file ${CERTIFICATE_DIRECTORY}/CAcerts/${ROOT_CERTIFICATE};
-#ln -s ${DIRECTORY}/jks/truststore.jks /usr/java/default/jre/lib/security/jssecacerts
+#Enable TLS for Cloudera Manager Server
+#http://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_tls_browser.html
 source tls-functions.sh
 
 main() {

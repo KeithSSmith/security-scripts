@@ -1,10 +1,6 @@
 #!/bin/bash
 source tls-functions.sh
 
-DOMAIN=''
-HOST_PATTERN=''
-HOST_NUMBER_START=''
-HOST_NUMBER_END=''
 MORE_HOSTS=true
 HOSTS=()
 HOST_LIST=$(mktemp -t all_host.XXXXXXXXXX)
