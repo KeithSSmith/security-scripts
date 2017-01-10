@@ -18,8 +18,7 @@ main() {
     generate_fqdn ${HOST_PATTERN} ${START} ${END} ${DOMAIN,,} HOSTS
     yes_no_entry "Write the above list of hosts to the hosts file (y/n)? " WRITE_HOSTS
     write_hosts ${WRITE_HOSTS}
-    yes_no_entry "Would you like to include any other hosts in this list (y/n)? " ADD_HOSTS
-    more_hosts ${ADD_HOSTS}
+    yes_no_entry "Would you like to include any other hosts in this list (y/n)? " MORE_HOSTS
 
   done
 

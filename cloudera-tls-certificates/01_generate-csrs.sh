@@ -12,15 +12,16 @@ main() {
   #host_entry "Enter domain name to trust in subject alternative name and press [ENTER]: " DOMAIN
   password_entry "Enter password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
   distinguished_name_entry DISTINGUISHED_NAME
+  san_builder "Are there any Subject Alternative Names that should be added to the certificate (y/n)?"
   pem_for_ssh_check
 
   for HOST in $(cat /tmp/hosts)
   do
     HOSTNAME="hostname; "
     TASK_CREATE_KEYSTORE="${REMOVE_EXISTING_KEYSTORE} printf 'Creating keystore...\n'; "
-    CREATE_KEYSTORE="keytool -genkeypair -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias ${HOST} -dname \"CN=${HOST},${DISTINGUISHED_NAME}\" -ext san=dns:${HOST} -keyalg RSA -keysize 2048 -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD}; "
+    CREATE_KEYSTORE="keytool -genkeypair -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -alias ${HOST} -dname \"CN=${HOST},${DISTINGUISHED_NAME}\" -ext san=dns:${HOST}${SAN_STRING} -keyalg RSA -keysize 2048 -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD}; "
     TASK_GEN_CSR="printf 'Generating CSR...\n'; "
-    GEN_CSR="keytool -certreq -alias ${HOST} -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -file ${CERTIFICATE_DIRECTORY}/x509/${HOST}.csr -ext san=dns:${HOST} -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD}"
+    GEN_CSR="keytool -certreq -alias ${HOST} -keystore ${CERTIFICATE_DIRECTORY}/jks/${HOST}.${KEYSTORE_FILE_EXTENSION} -file ${CERTIFICATE_DIRECTORY}/x509/${HOST}.csr -ext san=dns:${HOST}${SAN_STRING} -storepass ${KEYSTORE_PASSWORD} -keypass ${KEYSTORE_PASSWORD}"
 
     SSH_COMMAND="${HOSTNAME}${TASK_CREATE_KEYSTORE}${CREATE_KEYSTORE}${TASK_GEN_CSR}${GEN_CSR}"
     ssh ${PEM_FILE} ${HOST} "${SSH_COMMAND}"

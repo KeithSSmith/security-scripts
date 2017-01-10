@@ -168,12 +168,6 @@ write_hosts() {
   fi
 }
 
-more_hosts() {
-  parameter_count_check "$#" 1
-
-  MORE_HOSTS=${1}
-}
-
 directory_entry() {
   parameter_count_check "$#" 3
   generic_read "${1}"
@@ -311,4 +305,28 @@ collect_csrs() {
   done
 
   printf "Submit the CSR's for Signing with a Certificate Authority and place all Signed Certificates on this server and run 02_build-keystores.sh ...\n"
+}
+
+san_builder() {
+  parameter_count_check "$#" 1
+
+  yes_no_entry "${1}" SAN_CHECK
+
+  if ${SAN_CHECK}
+  then
+    MORE_SAN=true
+
+    while ${MORE_SAN}
+    do
+      generic_entry "Enter SAN (Ex: cloudera-manager.example.com): " SAN_NAME
+      yes_no_entry "Enter ${SAN_NAME} into keystore (y/n)? " SAN_ENTRY
+      if ${SAN_ENTRY}
+      then
+        SAN_STRING=${SAN_STRING}",dns:${SAN_NAME}"
+      fi
+      yes_no_entry "Would you like to include any other SAN's to the certificate (y/n)? " MORE_SAN
+    done
+
+  fi
+
 }
