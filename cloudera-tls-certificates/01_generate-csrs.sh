@@ -12,7 +12,7 @@ main() {
   #host_entry "Enter domain name to trust in subject alternative name and press [ENTER]: " DOMAIN
   password_entry "Enter password for the Keystore and press [Enter]: " KEYSTORE_PASSWORD
   distinguished_name_entry DISTINGUISHED_NAME
-  san_builder "Are there any Subject Alternative Names that should be added to the certificate (y/n)?"
+  san_builder "Are there any Subject Alternative Names that should be added to the certificate (y/n)? "
   pem_for_ssh_check
 
   for HOST in $(cat /tmp/hosts)

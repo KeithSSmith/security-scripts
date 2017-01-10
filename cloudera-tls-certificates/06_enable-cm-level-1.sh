@@ -25,7 +25,7 @@ main() {
   for HOST in $(cat /tmp/hosts)
   do
     HOSTNAME="hostname; "
-    TASK_CP_AGENT_CONFIG="printf 'Making a backup of the original Cloudera Manager Agent's config.ini ...\n'; "
+    TASK_CP_AGENT_CONFIG="printf 'Making a backup of the original Cloudera Manager Agents config.ini ...\n'; "
     CP_AGENT_CONFIG="cp /etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/config.ini.original; "
     TASK_ENABLE_AGENT_TLS="printf 'Turning on TLS in configuration file for the Cloudera Manager Agent ...\n'; "
     ENABLE_AGENT_TLS="cat /etc/cloudera-scm-agent/config.ini.original | sed \"s/use_tls=0/use_tls=1/\" > /etc/cloudera-scm-agent/config.ini.level-1; "
