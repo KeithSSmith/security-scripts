@@ -1,6 +1,6 @@
 #!/bin/bash
-#Enable TLS for Cloudera Manager Server
-#http://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_tls_browser.html
+#Enable TLS Level 2 for Cloudera Manager Agents
+#http://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_config_tls_auth.html
 source tls-functions.sh
 
 main() {
@@ -12,7 +12,7 @@ main() {
   for HOST in $(cat /tmp/hosts)
   do
     HOSTNAME="hostname; "
-    TASK_CM_AGENT_CONFIG="printf 'Making a backup of the original Cloudera Manager Agents config.ini ...\n'; "
+    TASK_CM_AGENT_CONFIG="printf 'Turning on Level 2 by changing Cloudera Manager Agents config.ini to include CA Directory ...\n'; "
     CM_AGENT_CONFIG="cat /etc/cloudera-scm-agent/config.ini.level-1 | sed \"s|# verify_cert_dir=|verify_cert_dir=${CERTIFICATE_DIRECTORY}/CAcerts|\" > /etc/cloudera-scm-agent/config.ini.level-2; "
     TASK_CP_AGENT_CONFIG="printf 'Enabling TLS Level 2 for Cloudera Manager Agents config.ini ...\n'; "
     CP_AGENT_CONFIG="cp /etc/cloudera-scm-agent/config.ini.level-2 /etc/cloudera-scm-agent/config.ini; "
@@ -28,6 +28,7 @@ main() {
 
   printf '\nRestarting Cloudera Management Services ...\n'
   curl -X POST -u ${CLOUDERA_MANAGER_USER} --cacert "${CERTIFICATE_DIRECTORY}/CAcerts/cachain.pem" https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/cm/service/commands/restart
+  printf '\n'
 }
 
 main "${@}"

@@ -1,6 +1,6 @@
 #!/bin/bash
-#Enable TLS for Cloudera Manager Server
-#http://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_tls_browser.html
+#Enable TLS Level 1 for Cloudera Manager Agents
+#http://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_config_tls_encr.html
 source tls-functions.sh
 
 main() {
@@ -37,11 +37,10 @@ main() {
     SSH_COMMAND="${HOSTNAME}${TASK_CP_AGENT_CONFIG}${CP_AGENT_CONFIG}${TASK_ENABLE_AGENT_TLS}${ENABLE_AGENT_TLS}${TASK_CP_LVL1_AGENT_CONFIG}${CP_LVL1_AGENT_CONFIG}${TASK_RESTART_CM_AGENT}${RESTART_CM_AGENT}"
 
     ssh ${PEM_FILE} ${HOST} "${SSH_COMMAND}"
-
-    printf 'Restarting Cloudera Manager Server ...\n'
-    systemctl restart cloudera-scm-server
-
   done
+
+  printf 'Restarting Cloudera Manager Server ...\n'
+  systemctl restart cloudera-scm-server
 }
 
 main "${@}"
