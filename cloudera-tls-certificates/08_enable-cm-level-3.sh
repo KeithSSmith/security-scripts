@@ -15,7 +15,7 @@ main() {
     HOSTNAME="hostname; "
     TASK_CM_AGENT_PW="printf 'Storing Truststore password in a location that the Cloudera Manager Agents can read from ...\n'; "
     CM_AGENT_PW="echo ${TRUSTSTORE_PASSWORD} > /etc/cloudera-scm-agent/agentkey.pw; "
-    TASK_CM_AGENT_CONFIG="printf 'Making a backup of the original Cloudera Manager Agents config.ini ...\n'; "
+    TASK_CM_AGENT_CONFIG="printf 'Changing Cloudera Manager Agent config.ini from TLS Level 2 to Level 3 properties ...\n'; "
     CM_AGENT_CONFIG="cat /etc/cloudera-scm-agent/config.ini.level-2 | sed -e \"s|# client_key_file=|client_key_file=${CERTIFICATE_DIRECTORY}/x509/cmagent.key|\" -e \"s|# client_cert_file=|client_cert_file=${CERTIFICATE_DIRECTORY}/x509/cmagent.pem|\" -e \"s|# client_keypw_file=|client_keypw_file=/etc/cloudera-scm-agent/agentkey.pw|\" > /etc/cloudera-scm-agent/config.ini.level-3; "
     TASK_CP_AGENT_CONFIG="printf 'Enabling TLS Level 3 for Cloudera Manager Agents config.ini ...\n'; "
     CP_AGENT_CONFIG="cp /etc/cloudera-scm-agent/config.ini.level-3 /etc/cloudera-scm-agent/config.ini; "
