@@ -227,17 +227,6 @@ check_file_exists() {
   fi
 }
 
-check_directory_exists() {
-  parameter_count_check "$#" 1
-
-  if [ -d "${1}" ]
-  then
-    echo "${1} directory exists"
-  else
-    echo "${1} directory doesn't exist"
-  fi
-}
-
 create_certificate_directory() {
   parameter_count_check "$#" 1
 
