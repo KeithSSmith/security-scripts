@@ -7,20 +7,20 @@ This collection of scripts can be referenced for User Creation via LDAP Modify, 
 ## Build Users with both Scripts
 
 ```vim
-./ad_to_cm_keytab_creation.sh [LDAP IP/Hostname] [Account Name with Create Access]
+source ad_to_cm_keytab_creation.sh [LDAP IP/Hostname] [Account Name with Create Access]
 ```
 
 ## AD Account Creation via LDAP Modify
 
 ```vim
-./ad_account_creation.sh [LDAP IP/Hostname] [Account Name with Create Access]
+source ad_account_creation.sh [LDAP IP/Hostname] [Account Name with Create Access]
 ```
 
 
 ## AD Keytab Creation via ktutil
 
 ```vim
-./ad_keytab_creation.sh
+source ad_keytab_creation.sh
 ```
 
 All of the above files pull from the ad_accounts.txt file and need to match the services and IP's that are in the customers environment.
