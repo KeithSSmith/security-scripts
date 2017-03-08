@@ -3,17 +3,6 @@ set -e
 PEM_FILE=''
 declare -A TRUTH_ARRAY=( ["y"]=true ["yes"]=true ["t"]=true ["true"]=true ["n"]=false ["no"]=false ["f"]=false ["false"]=false )
 declare -A VERSION_ARRAY=( ["5.11"]="v16" ["5.10"]="v15" ["5.9"]="v14" ["5.8"]="v13" ["5.7"]="v12" ["5.6"]="v11" ["5.5"]="v11" )
-source enable-tls-cloudera-navigator.sh
-source enable-tls-hdfs.sh
-source enable-tls-yarn.sh
-source enable-tls-hive.sh
-source enable-tls-hue.sh
-source enable-tls-impala.sh
-source enable-tls-oozie.sh
-source enable-tls-solr.sh
-source enable-tls-httpfs.sh
-source enable-tls-spark.sh
-source enable-tls-restart.sh
 
 
 parameter_count_check() {
@@ -144,14 +133,41 @@ pem_for_ssh_check() {
   fi
 }
 
+trim() {
+  local var="$*"
+  # remove leading whitespace characters
+  var="${var#"${var%%[![:space:]]*}"}"
+  # remove trailing whitespace characters
+  var="${var%"${var##*[![:space:]]}"}"
+  echo -n "$var"
+}
+
+title() {
+  parameter_count_check "$#" 1
+  echo -en '\E[43;30m'"\033[1m${1}\033[0m\n"
+}
+
+passed() {
+  parameter_count_check "$#" 2
+  #echo -en ${1}' - \E[42;30m'"\033[1m${2}\033[0m\n"
+  printf "%-40s %-30s\n" "${1}" "[$(tput setaf 2)${2}$(tput setaf 9)]"
+}
+
+failed() {
+  parameter_count_check "$#" 2
+  #echo -en ${1}' - \E[41;30m'"\033[1m${2}\033[0m\n"
+  printf "%-40s %-30s\n" "${1}" "[$(tput setaf 1)${2}$(tput setaf 9)]"
+}
+
 check_cloudera_manager_version() {
   parameter_count_check "$#" 0
 
   CM_VERSION_API=$(mktemp -t cm_version.XXXXXXXXXX)
 
-  curl -s -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
-  --cacert ${CLOUDERA_MANAGER_CA_PEM} \
-  https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v1/cm/version > "${CM_VERSION_API}"
+  # curl -s -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
+  # --cacert ${CLOUDERA_MANAGER_CA_PEM} \
+  # https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v1/cm/version > "${CM_VERSION_API}"
+  curl -s -u admin:admin -i http://localhost:7180/api/v1/cm/version > "${CM_VERSION_API}"
 
   CM_VERSION=$(cat "${CM_VERSION_API}" | grep version | awk -F':' '{print $2}' | sed -e 's| "||' -e 's|",||' | awk -F'.' '{print $1 "." $2}')
   CM_MAJOR_VERSION=$(echo "${CM_VERSION}" | awk -F'.' '{print $1}')
@@ -185,9 +201,10 @@ check_cloudera_manager_cluster_name() {
 
   CM_CLUSTERS_API=$(mktemp -t cm_clusters.XXXXXXXXXX)
 
-  curl -s -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
-  --cacert ${CLOUDERA_MANAGER_CA_PEM} \
-  https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v11/clusters > "${CM_CLUSTERS_API}"
+  # curl -s -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
+  # --cacert ${CLOUDERA_MANAGER_CA_PEM} \
+  # https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v11/clusters > "${CM_CLUSTERS_API}"
+  curl -s -u admin:admin -i http://localhost:7180/api/v11/clusters > "${CM_CLUSTERS_API}"
 
   CLUSTERS=$(cat ${CM_CLUSTERS_API} | grep name | awk -F':' '{print $2}' | sed -e 's| "||' -e 's|",||')
   CLUSTERS_DISPLAY=$(cat ${CM_CLUSTERS_API} | grep displayName | awk -F':' '{print $2}' | sed -e 's| "||' -e 's|",||')
@@ -213,4 +230,13 @@ check_cloudera_manager_cluster_name() {
   CDH_CLUSTER=$(echo ${CLUSTER_ARRAY[${CDH_CLUSTER_SELECTION}]} | sed -e 's:%:%25:g' -e 's: :%20:g' -e 's:<:%3C:g' -e 's:>:%3E:g' -e 's:#:%23:g' -e 's:{:%7B:g' -e 's:}:%7D:g' -e 's:|:%7C:g' -e 's:\\:%5C:g' -e 's:\^:%5E:g' -e 's:~:%7E:g' -e 's:\[:%5B:g' -e 's:\]:%5D:g' -e 's:`:%60:g' -e 's:;:%3B:g' -e 's:/:%2F:g' -e 's:?:%3F:g' -e 's^:^%3A^g' -e 's:@:%40:g' -e 's:=:%3D:g' -e 's:&:%26:g' -e 's:\$:%24:g' -e 's:\!:%21:g' -e 's:\*:%2A:g')
 
   rm -f ${CM_CLUSTERS_API}
+}
+
+cm_grep_json() {
+  parameter_count_check "$#" 3
+
+  JSON_CONFIG=${1}
+  JSON_NAME=${2}
+
+  eval ${3}=$(grep -A 1 "\"name\" : \"${JSON_NAME}\"" ${JSON_CONFIG} | grep value | awk -F':' '{print $2}' | sed -e 's| "||' -e 's|"||')
 }
