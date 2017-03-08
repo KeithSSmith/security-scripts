@@ -11,7 +11,7 @@ enable-tls-oozie() {
         "value" : "true"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/oozie/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/oozie/config
 
   curl -X PUT -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
   --cacert ${CLOUDERA_MANAGER_CA_PEM} \
@@ -32,5 +32,5 @@ enable-tls-oozie() {
         "value" : "'${TRUSTSTORE_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/oozie/roleConfigGroups/oozie-OOZIE_SERVER-BASE/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/oozie/roleConfigGroups/oozie-OOZIE_SERVER-BASE/config
 }

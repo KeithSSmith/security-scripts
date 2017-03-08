@@ -23,7 +23,7 @@ enable-tls-hue() {
         "value" : "'${PEM_KEY_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/hue/roleConfigGroups/hue-HUE_SERVER-BASE/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/hue/roleConfigGroups/hue-HUE_SERVER-BASE/config
 
   curl -X PUT -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
   --cacert ${CLOUDERA_MANAGER_CA_PEM} \
@@ -35,5 +35,5 @@ enable-tls-hue() {
         "value" : "[desktop]\n[[session]]\nsecure=true\nhttp-only=true\nttl=86400\n[[auth]]\nidle_session_timeout=1800\n[beeswax]\n[[ssl]]\nenable=true\ncacerts='${PEM_CA_PATH}'\nvalidate=true\n[impala]\nclose_queries=true\n[[ssl]]\nenable=true\ncacerts='${PEM_CA_PATH}'\nvalidate=true\n"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/hue/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/hue/config
 }

@@ -9,6 +9,8 @@ main() {
   password_entry "Enter the Cloudera Manager password for the user ${CLOUDERA_MANAGER_USER} and press [ENTER]: " CLOUDERA_MANAGER_USER_PASSWORD
 
   default_entry "Enter the PEM file location to communicate with ${CLOUDERA_MANAGER_HOSTNAME} via TLS (Default: /opt/cloudera/security/x509/cachain.pem) and press [ENTER]: " CLOUDERA_MANAGER_CA_PEM "/opt/cloudera/security/x509/cachain.pem"
+  check_cloudera_manager_version
+  check_cloudera_manager_cluster_name
 
   default_entry "Enter the keystore location (Default: /opt/cloudera/security/jks/keystore.jks) and press [ENTER]: " KEYSTORE_PATH "/opt/cloudera/security/jks/keystore.jks"
   password_entry "Enter the keystore password and press [ENTER]: " KEYSTORE_PASSWORD

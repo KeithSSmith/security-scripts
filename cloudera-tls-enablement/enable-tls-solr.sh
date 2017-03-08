@@ -23,5 +23,5 @@ enable-tls-solr() {
         "value" : "'${TRUSTSTORE_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/solr/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/solr/config
 }

@@ -20,5 +20,5 @@ enable-tls-cloudera-navigator() {
         "value" : "'${KEYSTORE_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/cm/service/roleConfigGroups/mgmt-NAVIGATORMETASERVER-BASE/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/cm/service/roleConfigGroups/mgmt-NAVIGATORMETASERVER-BASE/config
 }

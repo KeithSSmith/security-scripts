@@ -23,7 +23,7 @@ enable-tls-impala() {
         "value" : "'${PEM_KEY_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/impala/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/impala/config
 
   curl -X PUT -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
   --cacert ${CLOUDERA_MANAGER_CA_PEM} \
@@ -41,7 +41,7 @@ enable-tls-impala() {
         "value" : "'${PEM_KEY_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/impala/roleConfigGroups/impala-IMPALAD-BASE/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/impala/roleConfigGroups/impala-IMPALAD-BASE/config
 
   curl -X PUT -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
   --cacert ${CLOUDERA_MANAGER_CA_PEM} \
@@ -59,7 +59,7 @@ enable-tls-impala() {
         "value" : "'${PEM_KEY_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/impala/roleConfigGroups/impala-CATALOGSERVER-BASE/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/impala/roleConfigGroups/impala-CATALOGSERVER-BASE/config
 
   curl -X PUT -u ${CLOUDERA_MANAGER_USER}:${CLOUDERA_MANAGER_USER_PASSWORD} -i \
   --cacert ${CLOUDERA_MANAGER_CA_PEM} \
@@ -77,5 +77,5 @@ enable-tls-impala() {
         "value" : "'${PEM_KEY_PASSWORD}'"
       }
     ]
-  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/v13/clusters/cluster/services/impala/roleConfigGroups/impala-STATESTORE-BASE/config
+  }' https://${CLOUDERA_MANAGER_HOSTNAME}:7183/api/${CM_API_VERSION}/clusters/${CDH_CLUSTER}/services/impala/roleConfigGroups/impala-STATESTORE-BASE/config
 }
