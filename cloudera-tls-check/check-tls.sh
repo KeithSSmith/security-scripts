@@ -1,6 +1,5 @@
 #!/bin/bash
 source tls-check-functions.sh
-source check-tls-cloudera-navigator.sh
 
 main() {
   SERVICES="cloudera-manager cloudera-navigator hdfs yarn hive hue impala oozie solr spark httpfs"
@@ -11,8 +10,8 @@ main() {
   password_entry "Enter the Cloudera Manager password for the user ${CLOUDERA_MANAGER_USER} and press [ENTER]: " CLOUDERA_MANAGER_USER_PASSWORD
 
   default_entry "Enter the PEM file location to communicate with ${CLOUDERA_MANAGER_HOSTNAME} via TLS (Default: /opt/cloudera/security/x509/cachain.pem) and press [ENTER]: " CLOUDERA_MANAGER_CA_PEM "/opt/cloudera/security/x509/cachain.pem"
-  check_cloudera_manager_version
-  check_cloudera_manager_cluster_name
+  # check_cloudera_manager_version
+  # check_cloudera_manager_cluster_name
 
 
   for SERVICE in ${SERVICES}
@@ -21,6 +20,7 @@ main() {
 
     if ${CHECK_TLS}
     then
+      source check-tls-${SERVICE}.sh
       check-tls-${SERVICE}
     fi
   done
